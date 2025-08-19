@@ -11,10 +11,7 @@ const prisma = new PrismaClient();
 
 // ルーティングとミドルウェア
 
-app.get("/test", async (req, res) => {
-    res.status(200).send("test");
-});
-
+/** 
 app.get("/insert", async (req, res) => {
     try {
         const makeRows = (
@@ -44,6 +41,7 @@ app.get("/insert", async (req, res) => {
         res.status(500).send("error");
     }
 });
+*/
 
 app.get("/users", async (req, res) => {
     const users = await db.any(`select * from "User"`);

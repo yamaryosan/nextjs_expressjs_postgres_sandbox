@@ -1,9 +1,9 @@
-import express from "express";
-import type { Request, Response, NextFunction } from "express";
-import pgPromise from "pg-promise";
-import { PrismaClient } from "@prisma/client";
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import pgPromise from 'pg-promise';
+import { PrismaClient } from '@prisma/client';
 
-const db = pgPromise()("postgres://myuser:mypassword@localhost:5432/mydb");
+const db = pgPromise()('postgres://myuser:mypassword@localhost:5432/mydb');
 
 const app = express();
 
@@ -43,22 +43,22 @@ app.get("/insert", async (req, res) => {
 });
 */
 
-app.get("/users", async (req, res) => {
-    const users = await db.any(`select * from "User"`);
-    console.log(users);
-    res.status(200).json(users);
+app.get('/users', async (req, res) => {
+	const users = await db.any(`select * from "User"`);
+	console.log(users);
+	res.status(200).json(users);
 });
 
-app.get("/", (req, res) => {
-    res.status(200).send("Hello World");
+app.get('/', (req, res) => {
+	res.status(200).send('Hello World');
 });
 
 // 包括的エラーハンドリング
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).send("Internal Server Error");
+	res.status(500).send('Internal Server Error');
 });
 
 // サーバ起動
 app.listen(4000, () => {
-    console.log("Server is running on port 4000");
+	console.log('Server is running on port 4000');
 });

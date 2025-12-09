@@ -3,39 +3,40 @@ import { jwtVerify } from 'jose';
 
 const SECRET = new TextEncoder().encode('your-secret-key');
 
+// APIレスポンス用
+function apiUnauthorized(message = 'Unauthorized') {
+	return new NextResponse(JSON.stringify({ error: message }), {
+		status: 401,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+
+// ページレスポンス用（loginへ飛ばす）
+function pageRedirect(req: NextRequest) {
+	return NextResponse.redirect(new URL('/login', req.url));
+}
+
 export async function middleware(req: NextRequest) {
 	const token = req.cookies.get('auth')?.value;
-	const url = req.nextUrl;
+	const path = req.nextUrl.pathname;
+	const isApi = path.startsWith('/api/');
 
-	const isApiRequest = url.pathname.startsWith('/api/');
-
-	// トークンなし
+	// トークン無し
 	if (!token) {
-		if (isApiRequest) {
-			return NextResponse.json(
-				{ error: 'Unauthorized' },
-				{ status: 401 },
-			);
-		}
-		// ブラウザアクセス時はリダイレクト
-		return NextResponse.redirect(new URL('/login', req.url));
+		return isApi ? apiUnauthorized() : pageRedirect(req);
 	}
 
+	// トークン有ならば検証
 	try {
 		await jwtVerify(token, SECRET);
 		return NextResponse.next();
 	} catch {
-		if (isApiRequest) {
-			return NextResponse.json(
-				{ error: 'Invalid or expired token' },
-				{ status: 401 },
-			);
-		}
-		return NextResponse.redirect(new URL('/login', req.url));
+		return isApi
+			? apiUnauthorized('Invalid or expired token')
+			: pageRedirect(req);
 	}
 }
 
-// middlewareが適用されるパス
 export const config = {
 	matcher: ['/protected/:path*', '/api/protected/:path*'],
 };

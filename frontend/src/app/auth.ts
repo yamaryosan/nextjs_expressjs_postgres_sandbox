@@ -6,7 +6,7 @@ import { comparePassword } from '@/lib/password';
 
 const schema = z.object({
 	email: z.string().min(1),
-	password: z.string().min(1),
+	password: z.string().min(4),
 });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

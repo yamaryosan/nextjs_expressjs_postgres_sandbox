@@ -18,7 +18,7 @@ export default function RegisterPage() {
 		const data = await res.json();
 		if (res.ok) {
 			setMessage('登録完了。ログイン画面へ移動します。');
-			setTimeout(() => router.push('/login'), 10000);
+			setTimeout(() => router.push('/login'), 1000);
 		} else {
 			setMessage(data.error || '登録に失敗しました');
 		}
